@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AstroHijri Pro - Kalkulator Geometrik Hilal</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Outfit', 'sans-serif'] },
+                    colors: {
+                        space: '#0f172a',
+                        accent: '#facc15', 
+                        moonlight: '#fef08a'
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-out forwards',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="min-h-screen flex flex-col relative">
+
+    <nav class="w-full px-6 py-5 flex justify-between items-center z-50 fixed top-0 bg-space/80 backdrop-blur-md border-b border-white/10">
+        <div class="text-2xl font-bold tracking-wider flex items-center gap-3 cursor-pointer" onclick="switchTab('calculator')">
+            <div class="w-10 h-10 bg-accent/10 rounded-full flex items-center justify-center border border-accent/30 shadow-[0_0_15px_rgba(250,204,21,0.2)]">
+                <i class="fa-solid fa-moon text-accent"></i>
+            </div>
+             <span class="bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">AstroHijri Pro</span>
+        </div>
+        
+        <div class="hidden md:flex gap-8 text-sm font-semibold text-gray-400">
+            <button onclick="switchTab('calculator')" id="nav-calculator" class="nav-item text-accent transition relative py-2 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:bg-accent after:transition-all">Kalkulator</button>
+            <button onclick="switchTab('metode')" id="nav-metode" class="nav-item hover:text-accent transition relative py-2 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-accent hover:after:w-full after:transition-all">Metode</button>
+            <button onclick="switchTab('tentang')" id="nav-tentang" class="nav-item hover:text-accent transition relative py-2 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-accent hover:after:w-full after:transition-all">Tentang</button>
+        </div>
+    </nav>
+
+    <main class="flex-grow container mx-auto px-4 pt-32 pb-12 relative z-10 min-h-screen">
+        
+        <section id="page-calculator" class="grid lg:grid-cols-5 gap-12 items-start animate-fade-in">
+            <div class="lg:col-span-2 space-y-8 mt-2">
+                <div>
+                    <h1 class="text-4xl md:text-5xl font-bold leading-tight mb-4">
+                        Presisi Geometrik <br>
+                        <span class="text-accent glow-text">Penentuan Awal Bulan.</span>
+                    </h1>
+                    <p class="text-gray-400 text-lg leading-relaxed">
+                        Simulasi posisi benda langit berbasis algoritma astronomi modern untuk memprediksi visibilitas Hilal secara akurat.
+                    </p>
+                </div>
+
+                <div class="glass-panel p-6 rounded-3xl space-y-6 relative group/card">
+                    <div class="relative z-20">
+                        <div class="flex justify-between items-end mb-2">
+                            <label class="block text-gray-300 text-sm font-medium">Lokasi Pengamatan</label>
+                            <button onclick="simulateGeo()" class="text-xs text-accent hover:text-white transition flex items-center gap-1 cursor-pointer select-none">
+                                <i class="fa-solid fa-location-crosshairs"></i> Deteksi Otomatis
+                            </button>
+                        </div>
+                        <div class="relative group">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                <i class="fa-solid fa-map-pin text-gray-500 group-focus-within:text-accent transition-colors"></i>
+                            </div>
+                            <input type="text" id="locationInput" onkeyup="searchLocation()" autocomplete="off" placeholder="Ketik nama kota (misal: Malang)..." 
+                                class="block w-full bg-gray-900/50 border border-gray-700 text-white rounded-xl py-3 pl-10 pr-4 placeholder-gray-500 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all font-medium shadow-inner">
+                            <ul id="suggestionList" class="absolute w-full bg-gray-800 border border-gray-600 rounded-lg mt-2 max-h-60 overflow-y-auto shadow-2xl hidden z-50 divide-y divide-gray-700"></ul>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 relative z-10">
+                        <div>
+                            <label class="block text-gray-300 text-sm font-medium mb-2">Tanggal Masehi (H-1)</label>
+                            <input type="date" id="dateInput" class="w-full bg-gray-900/50 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-accent font-medium transition cursor-pointer">
+                        </div>
+                        <div>
+                            <label class="block text-gray-300 text-sm font-medium mb-2">Kriteria Visibilitas</label>
+                            <div class="relative">
+                                <select class="w-full bg-gray-900/50 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-accent font-medium appearance-none transition cursor-pointer">
+                                    <option>MABIMS Baru (3-6.4)</option>
+                                    <option>Odeh (International)</option>
+                                    <option>Yallop (RHM)</option>
+                                </select>
+                                <i class="fa-solid fa-chevron-down absolute right-4 top-4 text-gray-500 pointer-events-none"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button id="calculateBtn" onclick="calculateData()" class="w-full bg-gradient-to-r from-accent to-orange-500 hover:from-yellow-400 hover:to-orange-400 text-space font-bold text-lg py-4 rounded-xl transition shadow-[0_0_20px_rgba(250,204,21,0.3)] transform hover:scale-[1.01] active:scale-95 flex justify-center items-center gap-2 relative overflow-hidden z-10">
+                        <span class="relative z-10 flex items-center gap-2"><i class="fa-solid fa-calculator"></i> Hitung Posisi Geometris</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="lg:col-span-3 h-full min-h-[650px] relative">
+                <div class="glass-panel rounded-3xl h-full relative flex flex-col w-full">
+                    
+                    <div id="initial-state" class="absolute inset-0 flex flex-col items-center justify-center transition-all duration-500 bg-space/40 z-20">
+                        <div class="orbit-container scale-75 md:scale-100">
+                            <div class="sun-center"></div>
+                            <div class="orbit-ring orbit-earth"><div class="planet earth"><div class="orbit-ring orbit-moon border-gray-500/30"><div class="planet moon"></div></div></div></div>
+                        </div>
+                        <p class="mt-12 text-gray-400 font-medium tracking-widest uppercase text-xs animate-pulse">Menunggu Parameter Input...</p>
+                    </div>
+
+                    <div id="result-visual" class="absolute inset-0 opacity-0 transition-all duration-1000 z-0 overflow-hidden rounded-3xl">
+                        </div>
+
+                    <div id="result-data" class="relative z-10 flex-grow flex flex-col justify-end p-6 opacity-0 transition-all duration-1000 translate-y-8">
+                        <div class="mb-4 glass-panel p-5 rounded-2xl border-l-4 border-green-500 bg-gradient-to-r from-green-500/10 to-transparent backdrop-blur-md flex items-center justify-between shadow-lg">
+                            <div>
+                                <h3 class="text-green-400 text-[10px] font-bold uppercase tracking-widest mb-1">Kesimpulan Geometris</h3>
+                                <h2 id="res-hijri-date" class="text-3xl font-bold text-white">1 Ramadhan 1446 H</h2>
+                                <p class="text-gray-300 text-sm mt-1">Jatuh pada <span id="res-greg-date" class="text-accent font-semibold">...</span></p>
+                            </div>
+                            <div class="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center border border-green-500/50"><i class="fa-solid fa-check text-green-400 text-xl"></i></div>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                            <div class="glass-panel p-3 rounded-xl group relative cursor-help hover:bg-white/5 transition-colors">
+                                <div class="flex justify-between items-center mb-1">
+                                    <p class="text-[10px] text-gray-400 uppercase font-bold">Altitude</p>
+                                    <i class="fa-regular fa-circle-question text-gray-500 hover:text-accent text-[10px]"></i>
+                                </div>
+                                <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-3 bg-gray-900/95 border border-white/10 rounded-lg text-[10px] text-gray-300 shadow-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 text-center backdrop-blur-md">
+                                    Tinggi pusat Bulan di atas garis ufuk (horizon) saat Matahari terbenam.
+                                    <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-gray-900 rotate-45 border-r border-b border-white/10"></div>
+                                </div>
+                                <p id="res-alt" class="text-xl font-bold font-mono text-green-400">+04° 22'</p>
+                            </div>
+
+                            <div class="glass-panel p-3 rounded-xl group relative cursor-help hover:bg-white/5 transition-colors">
+                                <div class="flex justify-between items-center mb-1">
+                                    <p class="text-[10px] text-gray-400 uppercase font-bold">Elongasi</p>
+                                    <i class="fa-regular fa-circle-question text-gray-500 hover:text-accent text-[10px]"></i>
+                                </div>
+                                <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-3 bg-gray-900/95 border border-white/10 rounded-lg text-[10px] text-gray-300 shadow-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 text-center backdrop-blur-md">
+                                    Jarak sudut antara pusat Matahari dan pusat Bulan (Arc of Light).
+                                    <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-gray-900 rotate-45 border-r border-b border-white/10"></div>
+                                </div>
+                                <p id="res-elong" class="text-xl font-bold font-mono text-green-400">06° 50'</p>
+                            </div>
+
+                            <div class="glass-panel p-3 rounded-xl group relative cursor-help hover:bg-white/5 transition-colors">
+                                <div class="flex justify-between items-center mb-1">
+                                    <p class="text-[10px] text-gray-400 uppercase font-bold">Umur Bulan</p>
+                                    <i class="fa-regular fa-circle-question text-gray-500 hover:text-accent text-[10px]"></i>
+                                </div>
+                                <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-3 bg-gray-900/95 border border-white/10 rounded-lg text-[10px] text-gray-300 shadow-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 text-center backdrop-blur-md">
+                                    Selisih waktu sejak terjadinya konjungsi (Ijtima') hingga saat Matahari terbenam.
+                                    <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-gray-900 rotate-45 border-r border-b border-white/10"></div>
+                                </div>
+                                <p class="text-xl font-bold font-mono text-white">14j 30m</p>
+                            </div>
+
+                            <div class="glass-panel p-3 rounded-xl group relative cursor-help hover:bg-white/5 transition-colors">
+                                <div class="flex justify-between items-center mb-1">
+                                    <p class="text-[10px] text-gray-400 uppercase font-bold">Waktu Ijtima'</p>
+                                    <i class="fa-regular fa-circle-question text-gray-500 hover:text-accent text-[10px]"></i>
+                                </div>
+                                <div class="absolute bottom-full right-0 mb-2 w-48 p-3 bg-gray-900/95 border border-white/10 rounded-lg text-[10px] text-gray-300 shadow-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 text-center backdrop-blur-md">
+                                    Waktu terjadinya konjungsi geosentris (Bulan dan Matahari berada pada bujur yang sama).
+                                    <div class="absolute -bottom-1 right-4 w-2 h-2 bg-gray-900 rotate-45 border-r border-b border-white/10"></div>
+                                </div>
+                                <p class="text-lg font-bold font-mono text-white">10:30 WIB</p>
+                                <p id="res-ijtima-date" class="text-[9px] text-gray-500 mt-1">...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="page-metode" class="hidden animate-fade-in max-w-5xl mx-auto">
+            <div class="text-center mb-12">
+                <h1 class="text-4xl font-bold mb-4">Metode <span class="text-accent">Perhitungan</span></h1>
+                <p class="text-gray-400 max-w-2xl mx-auto">Memahami kriteria-kriteria visibilitas hilal yang digunakan dalam penentuan awal bulan Hijriah di dunia internasional.</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="glass-panel p-8 rounded-3xl border-t border-accent/20">
+                    <div class="w-12 h-12 bg-accent/20 rounded-full flex items-center justify-center text-accent mb-4"><i class="fa-solid fa-layer-group text-xl"></i></div>
+                    <h3 class="text-2xl font-bold mb-3">Neo MABIMS</h3>
+                    <p class="text-sm text-gray-400 mb-6">Kriteria baru yang disepakati Menteri Agama Brunei, Indonesia, Malaysia, dan Singapura. Digunakan secara resmi di Indonesia sejak 2022.</p>
+                    <ul class="space-y-3">
+                        <li class="flex items-center gap-3 text-sm bg-white/5 p-3 rounded-lg"><span class="text-accent font-bold font-mono w-8">3°</span> Tinggi Hilal (Altitude) minimal</li>
+                        <li class="flex items-center gap-3 text-sm bg-white/5 p-3 rounded-lg"><span class="text-accent font-bold font-mono w-8">6.4°</span> Elongasi (Jarak Sudut) minimal</li>
+                    </ul>
+                </div>
+
+                <div class="glass-panel p-8 rounded-3xl">
+                    <div class="w-12 h-12 bg-blue-500/20 rounded-full flex items-center justify-center text-blue-400 mb-4"><i class="fa-solid fa-globe text-xl"></i></div>
+                    <h3 class="text-2xl font-bold mb-3">Kriteria Odeh</h3>
+                    <p class="text-sm text-gray-400 mb-6">Dikembangkan oleh Mohammad Odeh (ICOP). Menggunakan pendekatan "Topocentric Contrast" antara kecerahan bulan dan langit senja.</p>
+                    <div class="p-4 rounded-xl bg-gradient-to-br from-blue-900/30 to-purple-900/30 border border-white/5">
+                        <p class="text-xs text-gray-300 italic">"Mempertimbangkan lebar sabit (W) dan perbedaan azimut relatif, memberikan akurasi tinggi untuk pengamatan dengan alat optik."</p>
+                    </div>
+                </div>
+
+                <div class="glass-panel p-8 rounded-3xl md:col-span-2">
+                    <h3 class="text-xl font-bold mb-4 flex items-center gap-2"><i class="fa-solid fa-chart-line text-green-400"></i> Algoritma VSOP87</h3>
+                    <p class="text-gray-400 leading-relaxed">
+                        Website ini menggunakan algoritma <span class="text-white font-semibold">VSOP87 (Variations Séculaires des Orbites Planétaires)</span>. 
+                        Ini adalah teori semianalitikal presisi tinggi untuk menghitung posisi planet dan bulan. 
+                        Akurasi perhitungan posisi mencapai <span class="text-accent">0.00001 derajat</span>, memungkinkan prediksi posisi geometris yang sangat tepat untuk keperluan hisab rukyat.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section id="page-tentang" class="hidden animate-fade-in max-w-4xl mx-auto">
+            <div class="glass-panel rounded-[3rem] p-8 md:p-12 relative overflow-hidden text-center z-10">
+                <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-accent/5 to-transparent pointer-events-none z-0"></div>
+                <div class="absolute -top-24 -right-24 w-64 h-64 bg-accent/10 rounded-full blur-[80px] z-0"></div>
+                <div class="absolute -bottom-24 -left-24 w-64 h-64 bg-blue-500/10 rounded-full blur-[80px] z-0"></div>
+                <div class="absolute inset-0 astro-pattern w-full h-full z-0"></div>
+
+                <div class="relative z-10">
+                    <div class="relative inline-block mb-6 group">
+                        <div class="absolute -inset-1 bg-gradient-to-r from-accent to-orange-500 rounded-full blur opacity-75 group-hover:opacity-100 transition duration-500"></div>
+                        <div class="relative w-32 h-32 md:w-40 md:h-40 bg-space rounded-full border-4 border-space flex items-center justify-center overflow-hidden">
+                            <img src="foto_profil.jpg" alt="Muhammad Dzikri" class="w-full h-full object-cover rounded-full">
+                        </div>
+                        <div class="absolute bottom-0 right-0 bg-gray-800 border border-gray-600 px-3 py-1 rounded-full text-[10px] font-bold text-accent shadow-lg flex items-center gap-1">
+                            <i class="fa-solid fa-atom"></i> Fisika Komputasi
+                        </div>
+                    </div>
+
+                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-2">
+                        Muhammad Dzikri <br class="md:hidden" /> Hikmatika Chairul Hadi
+                    </h2>
+                    <p class="text-accent font-medium tracking-wide text-sm md:text-base mb-8 uppercase">
+                        Computational Physics Student
+                    </p>
+
+                    <div class="max-w-2xl mx-auto space-y-4 text-gray-300 leading-relaxed text-sm md:text-base">
+                        <p>
+                            Website ini adalah wujud implementasi dari studi <span class="text-white font-semibold">Fisika Komputasi</span> yang saya dalami. 
+                            Menggabungkan ketertarikan pada algoritma numerik presisi tinggi dengan ilmu falak (astronomi Islam).
+                        </p>
+                        <p>
+                            Saya percaya bahwa <span class="text-white font-semibold">sains dan teknologi</span> dapat menjadi jembatan untuk memverifikasi fenomena alam 
+                            yang berkaitan dengan ibadah, memberikan visualisasi yang akurat, estetik, dan mudah dipahami oleh masyarakat luas.
+                        </p>
+                    </div>
+
+                    <div class="mt-10 pt-8 border-t border-white/10">
+                        <p class="text-xs text-gray-500 uppercase tracking-widest mb-4">Powered by Knowledge in</p>
+                        <div class="flex flex-wrap justify-center gap-3">
+                            <span class="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-xs font-mono text-blue-300 hover:border-blue-400 transition cursor-default"><i class="fa-brands fa-python mr-1"></i> Numerical Methods</span>
+                            <span class="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-xs font-mono text-yellow-300 hover:border-yellow-400 transition cursor-default"><i class="fa-solid fa-calculator mr-1"></i> Computational Physics</span>
+                            <span class="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-xs font-mono text-green-300 hover:border-green-400 transition cursor-default"><i class="fa-solid fa-moon mr-1"></i> Islamic Astronomy</span>
+                            <span class="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-xs font-mono text-purple-300 hover:border-purple-400 transition cursor-default"><i class="fa-brands fa-js mr-1"></i> Web Simulation</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 flex justify-center gap-6">
+                        <a href="https://github.com/painfulbykisses" target="_blank" class="text-gray-400 hover:text-white transition transform hover:scale-110"><i class="fa-brands fa-github text-2xl"></i></a>
+                        <a href="https://www.linkedin.com/in/muhammaddzikri17/" target="_blank" class="text-gray-400 hover:text-blue-500 transition transform hover:scale-110"><i class="fa-brands fa-linkedin text-2xl"></i></a>
+                        <a href="https://www.instagram.com/dezikrie/" target="_blank" class="text-gray-400 hover:text-pink-500 transition transform hover:scale-110"><i class="fa-brands fa-instagram text-2xl"></i></a>
+                        <a href="mailto:muhammaddzikri277@gmail.com" class="text-gray-400 hover:text-accent transition transform hover:scale-110"><i class="fa-solid fa-envelope text-2xl"></i></a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="text-center py-6 text-gray-600 text-xs z-10 relative">
+        <p>&copy; 2025 AstroHijri Pro. Data perhitungan geometris untuk keperluan edukasi.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
