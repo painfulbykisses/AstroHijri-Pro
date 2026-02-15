@@ -84,12 +84,6 @@ document.addEventListener('DOMContentLoaded', createStars);
 // 3. DATA KOTA & AUTOCOMPLETE (EXPANDED)
 // ==========================================
 const cities = [
-    // --- HOLY SITES ---
-    { name: "Mecca (Makkah)", coords: "21.3891° N, 39.8579° E" },
-    { name: "Medina (Madinah)", coords: "24.5247° N, 39.5692° E" },
-    { name: "Jerusalem (Al-Quds)", coords: "31.7683° N, 35.2137° E" },
-
-    // --- INDONESIA (Major Cities) ---
     { name: "Jakarta Pusat", coords: "-6.1751° S, 106.8650° E" },
     { name: "Bandung", coords: "-6.9175° S, 107.6191° E" },
     { name: "Surabaya", coords: "-7.2575° S, 112.7521° E" },
@@ -97,57 +91,16 @@ const cities = [
     { name: "Yogyakarta", coords: "-7.7956° S, 110.3695° E" },
     { name: "Malang", coords: "-7.9666° S, 112.6326° E" },
     { name: "Medan", coords: "3.5952° N, 98.6722° E" },
-    { name: "Aceh (Banda Aceh)", coords: "5.5483° N, 95.3238° E" },
     { name: "Palembang", coords: "-2.9761° S, 104.7754° E" },
     { name: "Makassar", coords: "-5.1477° S, 119.4327° E" },
     { name: "Denpasar", coords: "-8.6705° S, 115.2126° E" },
+    { name: "Aceh (Banda Aceh)", coords: "5.5483° N, 95.3238° E" },
     { name: "Jayapura", coords: "-2.5489° S, 140.7180° E" },
     { name: "Samarinda", coords: "-0.5022° S, 117.1536° E" },
     { name: "Banjarmasin", coords: "-3.3194° S, 114.5908° E" },
     { name: "Pontianak", coords: "-0.0263° S, 109.3425° E" },
     { name: "Mataram", coords: "-8.5833° S, 116.1167° E" },
-    { name: "Ambon", coords: "-3.6954° S, 128.1814° E" },
-
-    // --- ASIA & MIDDLE EAST ---
-    { name: "Riyadh (Saudi Arabia)", coords: "24.7136° N, 46.6753° E" },
-    { name: "Dubai (UAE)", coords: "25.2048° N, 55.2708° E" },
-    { name: "Istanbul (Turkey)", coords: "41.0082° N, 28.9784° E" },
-    { name: "Tehran (Iran)", coords: "35.6892° N, 51.3890° E" },
-    { name: "Baghdad (Iraq)", coords: "33.3152° N, 44.3661° E" },
-    { name: "Kuala Lumpur (Malaysia)", coords: "3.1390° N, 101.6869° E" },
-    { name: "Singapore", coords: "1.3521° N, 103.8198° E" },
-    { name: "Brunei (Bandar Seri Begawan)", coords: "4.9031° N, 114.9398° E" },
-    { name: "Tokyo (Japan)", coords: "35.6762° N, 139.6503° E" },
-    { name: "Seoul (South Korea)", coords: "37.5665° N, 126.9780° E" },
-    { name: "Beijing (China)", coords: "39.9042° N, 116.4074° E" },
-    { name: "New Delhi (India)", coords: "28.6139° N, 77.2090° E" },
-    { name: "Karachi (Pakistan)", coords: "24.8607° N, 67.0011° E" },
-
-    // --- EUROPE ---
-    { name: "London (UK)", coords: "51.5074° N, 0.1278° W" },
-    { name: "Paris (France)", coords: "48.8566° N, 2.3522° E" },
-    { name: "Berlin (Germany)", coords: "52.5200° N, 13.4050° E" },
-    { name: "Moscow (Russia)", coords: "55.7558° N, 37.6173° E" },
-    { name: "Madrid (Spain)", coords: "40.4168° N, 3.7038° W" },
-    { name: "Rome (Italy)", coords: "41.9028° N, 12.4964° E" },
-
-    // --- AFRICA ---
-    { name: "Cairo (Egypt)", coords: "30.0444° N, 31.2357° E" },
-    { name: "Casablanca (Morocco)", coords: "33.5731° N, 7.5898° W" },
-    { name: "Lagos (Nigeria)", coords: "6.5244° N, 3.3792° E" },
-    { name: "Cape Town (South Africa)", coords: "-33.9249° S, 18.4241° E" },
-
-    // --- AMERICAS ---
-    { name: "New York (USA)", coords: "40.7128° N, 74.0060° W" },
-    { name: "Los Angeles (USA)", coords: "34.0522° N, 118.2437° W" },
-    { name: "Toronto (Canada)", coords: "43.6510° N, 79.3470° W" },
-    { name: "São Paulo (Brazil)", coords: "-23.5558° S, 46.6396° W" },
-    { name: "Buenos Aires (Argentina)", coords: "-34.6037° S, 58.3816° W" },
-
-    // --- OCEANIA ---
-    { name: "Sydney (Australia)", coords: "-33.8688° S, 151.2093° E" },
-    { name: "Melbourne (Australia)", coords: "-37.8136° S, 144.9631° E" },
-    { name: "Auckland (New Zealand)", coords: "-36.8485° S, 174.7633° E" }
+    { name: "Ambon", coords: "-3.6954° S, 128.1814° E" }
 ];
 
 const input = document.getElementById('locationInput');

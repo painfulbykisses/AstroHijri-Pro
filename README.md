@@ -11,7 +11,7 @@ sdk: static
 > **High-Precision Geometric Hilal Calculator & Simulation**
 > Combining Modern Astronomy with Islamic Science.
 
-[![Live Demo](https://img.shields.io/badge/🚀_Live_Demo-Vercel-black?style=for-the-badge&logo=vercel&logoColor=white)](https://astrohijripro.vercel.app/)
+[![Live Demo](https://img.shields.io/badge/🚀_Live_Demo-Coming_Soon-blue?style=for-the-badge&logo=rocket&logoColor=white)](#)
 [![Tech Stack](https://img.shields.io/badge/Stack-HTML5_·_Tailwind_·_JS-yellow?style=for-the-badge&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 [![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
 
